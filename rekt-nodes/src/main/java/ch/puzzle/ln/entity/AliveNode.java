@@ -10,7 +10,7 @@ import java.util.List;
 @Entity
 public class AliveNode extends PanacheEntity {
 
-    @Column(length = 255, unique = false, nullable = true)
+    @Column(length = 255, unique = false, nullable = false)
     String email;
     @Column(length = 128, unique = true, nullable = false)
     String nodeId;

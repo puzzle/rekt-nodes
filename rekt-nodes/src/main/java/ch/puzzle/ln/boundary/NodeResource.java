@@ -8,6 +8,7 @@ import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 import java.time.Instant;
 import java.util.List;
 
@@ -39,8 +40,8 @@ public class NodeResource {
         }
         newNode.persist();
 
-        // TODO: locations
-        return Response.ok().build();
+        return Response.created(UriBuilder.fromResource(NodeResource.class).path("/rekt/"+newNode.id).build())
+                .build();
     }
 
     @GET
@@ -65,7 +66,7 @@ public class NodeResource {
         newNode.setRegistrationDate(Instant.now());
         newNode.persist();
 
-        // TODO: locations
-        return Response.ok().build();
+        return Response.created(UriBuilder.fromResource(NodeResource.class).path("/alive/"+newNode.id).build())
+                .build();
     }
 }

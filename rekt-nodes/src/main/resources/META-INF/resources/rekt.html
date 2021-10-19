@@ -1,0 +1,108 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>REKT Nodes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/wingcss/0.1.8/wing.min.css"/>
+    <!-- Load AngularJS -->
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <script type="text/javascript">
+      var app = angular.module("RektNodeManagement", []);
+
+      //Controller Part
+      app.controller("RektNodeManagementController", function ($scope, $http) {
+
+        //Initialize page with default data which is blank in this example
+        $scope.rektNodes = [];
+
+        $scope.form = {
+          email: "",
+          nodeId: "",
+          signature: ""
+        };
+
+        //Now load the data from server
+        _refreshPageData();
+
+        //HTTP POST methods for add fruits
+        $scope.add = function () {
+          var data = { "email": $scope.form.email, "nodeId": $scope.form.nodeId, "signature": $scope.form.signature };
+
+          $http({
+            method: "POST",
+            url: '/nodes/rekt',
+            data: angular.toJson(data),
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }).then(_success, _error);
+        };
+
+        /* Private Methods */
+        //HTTP GET- get all rektNodes collection
+        function _refreshPageData() {
+          $http({
+            method: 'GET',
+            url: '/nodes/rekt'
+          }).then(function successCallback(response) {
+            $scope.rektNodes = response.data;
+          }, function errorCallback(response) {
+            console.log(response.statusText);
+          });
+        }
+
+        function _success(response) {
+          _refreshPageData();
+          _clearForm();
+        }
+
+        function _error(response) {
+          alert(response.data.message || response.statusText);
+        }
+
+        //Clear the form
+        function _clearForm() {
+          $scope.form.email = "";
+          $scope.form.nodeId = "";
+          $scope.form.signature = "";
+        }
+      });
+    </script>
+</head>
+<body ng-app="RektNodeManagement" ng-controller="RektNodeManagementController">
+
+<div class="container">
+    <ul>
+        <li><a href="rekt.html">Rekt Nodes</a></li>
+        <li><a href="alive.html">Alive Nodes</a></li>
+    </ul>
+
+    <h1>Rekt Nodes</h1>
+
+    <h3>Add a Node</h3>
+    <form ng-submit="add()">
+        <div class="row">
+            <div class="col-5"><input type="text" placeholder="Contact (Email)" ng-model="form.email" size="255"/></div>
+        </div>
+        <div class="row">
+            <div class="col-6"><input type="text" placeholder="Node ID" ng-model="form.nodeId" size="128"/></div>
+        </div>
+        <div class="row">
+            <div class="col-6"><input type="text" placeholder="Signature" ng-model="form.signature" size="255"/></div>
+        </div>
+        <input type="submit" value="Save"/>
+    </form>
+
+    <h3>Rekt Node List</h3>
+    <div class="row">
+        <div class="col-2">Contact (Email)</div>
+        <div class="col-10">Details</div>
+    </div>
+    <div class="row" ng-repeat="rektNode in rektNodes">
+        <div class="col-2">{{ rektNode.email }}</div>
+        <div class="col-10">Node Id: {{ rektNode.nodeId }} <br /> Signature: {{ rektNode.signature }}</div>
+    </div>
+</div>
+
+</body>
+</html>
